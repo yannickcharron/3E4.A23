@@ -10,6 +10,7 @@
   "author": "Yannick Charron",
   "license": "ISC",
   "dependencies": {
-    "chalk": "^5.3.0"
+    "chalk": "^5.3.0",
+    "express": "^4.18.2"
   }
 }
