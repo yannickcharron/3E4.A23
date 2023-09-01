@@ -1,9 +1,29 @@
 import express from 'express';
+import dayjs from 'dayjs';
+
+import utc from 'dayjs/plugin/utc.js';
+import timezone from 'dayjs/plugin/timezone.js';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const app = express();
 
 app.get('/', (req, res) => {
     res.status(200).end();
+});
+
+app.get('/date', (req, res) => {
+
+    const timezone = req.query.timezone;
+
+    res.status(200);
+    res.set('Content-Type', 'text/plain');
+    //dayjs() => La date actuelle
+    //tz provient du plugin timezone
+    const dateInATimeZone = dayjs.tz(dayjs(), timezone).format()
+    res.send(dateInATimeZone);
+
 });
 
 app.get('/premiere', (req, res) => {
@@ -65,6 +85,9 @@ app.get('/math/:operation', (req, res) => {
     res.status(200);
     res.set('Content-Type', 'text/plain');
     res.send(resultat.toString());
+
+    //Yannick
+    //hfghfg
 
 
 });
