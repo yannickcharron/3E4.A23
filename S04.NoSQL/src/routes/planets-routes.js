@@ -1,7 +1,7 @@
 import express from 'express';
 import HttpError from 'http-errors';
 
-import PLANETS from '../data/planets.js';
+import Planet from '../models/planet-model.js';
 
 const router = express.Router();
 
@@ -14,15 +14,14 @@ class PlanetsRoutes {
         router.post('/planets', this.post);
     }
  
-    getAll(req, res, next) {
-        //TODO: Route qui retrouve l'ensemble des planètes
-        //console.log('GET ALL Planets');
-
-        res.status(200);
-        // res.set('Content-Type', 'application/json');
-        // res.send(PLANETS);
-        //.json() Défini le Content-Type et envoie la réponse en format json
-        res.json(PLANETS);
+    async getAll(req, res, next) {
+        
+        try {
+            const planets = await Planet.find();
+            res.status(200).json(planets);
+        } catch(err) {
+            return next(err);
+        }
 
     }
 

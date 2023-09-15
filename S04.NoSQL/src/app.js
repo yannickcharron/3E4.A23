@@ -6,7 +6,10 @@ import timezone from 'dayjs/plugin/timezone.js';
 
 import planetsRouter from './routes/planets-routes.js';
 
+import database from './core/database.js';
 import errorsMiddleware from './middlewares/errors.js';
+
+database(); //Tentative de connexion à la base de données
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

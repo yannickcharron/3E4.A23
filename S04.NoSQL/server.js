@@ -1,10 +1,9 @@
-//const chalk = require('chalk'); Ancienne méthode d'import de bibliothèque
-//server.js => fichier de démarrage => équivalent au main
+import 'dotenv-flow/config';
 import chalk from 'chalk';
 
 import app from './src/app.js';
 
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, err => {
 
@@ -15,6 +14,5 @@ app.listen(PORT, err => {
     }
 
     console.log(chalk.green.bold(`👍 Serveur en fonction sur le port ${PORT} 👍`))
-
 
 });
