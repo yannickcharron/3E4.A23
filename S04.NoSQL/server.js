@@ -18,5 +18,3 @@ app.listen(PORT, err => {
 
 
 });
-
-console.log(chalk.blue.bgGreenBright.bold('😍 Bonjour en couleur'));
