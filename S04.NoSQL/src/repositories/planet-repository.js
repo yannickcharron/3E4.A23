@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import Planet from '../models/planet-model.js';
 
 const ZERO_KELVIN = -273.15;
@@ -12,7 +13,11 @@ class PlanetRepository {
         return Planet.findById(idPlanet);
     }
 
-    transform(planet, transformOptions) {
+    create(planet) {
+        return Planet.create(planet);
+    }
+
+    transform(planet, transformOptions = {}) {
 
         //2 types de transformations
         //Les optionnels
@@ -23,6 +28,14 @@ class PlanetRepository {
         }
 
         //Les non-optionels (obligatoires)
+        planet.discoveryDate =  dayjs(planet.discoveryDate).format('YYYY-MM-DD HH:mm');
+        
+        //Pour le TP ajout d'une propriété
+        planet.nouvellePropriete = 0;
+
+        //Pour en supprimer une
+        delete planet.nouvellePropriete;
+        delete planet.__v;
 
         return planet;
 

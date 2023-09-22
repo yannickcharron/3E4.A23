@@ -7,15 +7,22 @@ const router = express.Router();
 
 class PlanetsRoutes {
   constructor() {
-    router.get('/planets', this.getAll);
-    router.get('/planets/:idPlanet', this.getOne);
-    router.delete('/planets/:idPlanet', this.deleteOne);
-    router.post('/planets', this.post);
+    router.get('/', this.getAll);
+    router.get('/:idPlanet', this.getOne);
+    router.delete('/:idPlanet', this.deleteOne);
+    router.post('/', this.post);
   }
 
   async getAll(req, res, next) {
     try {
-      const planets = await planetRepository.retrieveAll();
+      let planets = await planetRepository.retrieveAll();
+
+      planets = planets.map(p => {
+        p = p.toObject({getters: false, virtuals:false});
+        p = planetRepository.transform(p);
+        return p;
+      });
+
       res.status(200).json(planets);
     } catch (err) {
       return next(err);
@@ -44,6 +51,8 @@ class PlanetsRoutes {
         return next(HttpError.NotFound(`La planète avec l'identifiant ${idPlanet} n'existe pas`));
       }
 
+      //Avant d'appeler transform on doit convertir en objet la planet
+      planet = planet.toObject({ getters:false, virtuals:false });
       planet = planetRepository.transform(planet, transformOptions);
 
       res.status(200).json(planet);
@@ -56,9 +65,15 @@ class PlanetsRoutes {
     return next(HttpError.MethodNotAllowed());
   }
 
-  post(req, res, next) {
-    console.log(req.body);
-    //TODO:
+  async post(req, res, next) {
+    try {
+        let newPlanet = await planetRepository.create(req.body);
+        newPlanet = newPlanet.toObject({getters:false, virtuals:false});
+        newPlanet = planetRepository.transform(newPlanet);
+        res.status(201).json(newPlanet);
+    } catch(err) {
+      return next(err);
+    }
   }
 }
 

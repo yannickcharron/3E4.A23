@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
     res.status(200).end();
 });
 
-app.use(planetsRouter);
+app.use('/planets', planetsRouter);
 //Si d'autres routers les mettre avant le middleware de gestion d'error
 
 app.use(errorsMiddleware);
