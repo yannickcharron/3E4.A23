@@ -5,6 +5,7 @@ import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
 
 import planetsRouter from './routes/planets-routes.js';
+import explorersRouter from './routes/explorers-routes.js';
 
 import database from './core/database.js';
 import errorsMiddleware from './middlewares/errors.js';
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/planets', planetsRouter);
+app.use('/explorers', explorersRouter);
 //Si d'autres routers les mettre avant le middleware de gestion d'error
 
 app.use(errorsMiddleware);

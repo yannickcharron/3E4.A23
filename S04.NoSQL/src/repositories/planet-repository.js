@@ -9,6 +9,24 @@ class PlanetRepository {
         return Planet.find();
     }
 
+    retrieveByCriteria(criteria) {
+
+        //Skadex et temperature > 240 et position.y < 500
+        const testCriteria = {
+            discoveredBy: 'Skadex',
+            temperature: { $gt: 240},
+            'position.y': {$lt: 500}
+        };
+
+        //Skadex OU temperature > 240
+        const testCriteria2 = {
+            $or: [{discoveredBy: 'Skadex'},
+                  { temperature : { $gt: 240}}]
+        }
+
+        return Planet.find(criteria);
+    }
+
     retrieveOne(idPlanet) {
         return Planet.findById(idPlanet);
     }
