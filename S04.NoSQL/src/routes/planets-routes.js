@@ -67,6 +67,12 @@ class PlanetsRoutes {
 
   async post(req, res, next) {
     try {
+
+        //Code 400 dans un POST
+        if(Object.keys(req.body).length === 0) {
+          return next(HttpError.BadRequest('Impossible de créer une planète sans propriété'));
+        }
+
         let newPlanet = await planetRepository.create(req.body);
         newPlanet = newPlanet.toObject({getters:false, virtuals:false});
         newPlanet = planetRepository.transform(newPlanet);
