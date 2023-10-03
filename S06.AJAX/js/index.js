@@ -27,7 +27,8 @@ function displayPlanets(planets) {
 
 function displayPlanet(planet) {
     let htmlPlanet = '<div class="col-2 card m-2">';
-    htmlPlanet += `<h5 class="card-title">${planet.name}</h5>`;
+    htmlPlanet += `<img src="${planet.icon}" alt="Image de la planète ${planet.name}">`;
+    htmlPlanet += `<a href="details.html?planet=${planet.href}"><h5 class="card-title">${planet.name}</h5></a>`;
     htmlPlanet += '</div>';
 
     return htmlPlanet;
