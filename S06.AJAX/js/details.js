@@ -22,9 +22,38 @@ async function retrievePlanet(href) {
     if(response.status === 200) {
         const planet = response.data;
         console.log(planet);
+
+        $('#imgIcon').attr('src', planet.icon);
+        $('#lblName').html(planet.name);
+        $('#lblDiscoveredBy').html(planet.discoveredBy);
+        $('#lblDiscoveryDate').html(planet.discoveryDate);
+        $('#lblTemperature').html(planet.temperature);
+        $('#lblPosition').html(`(${planet.position.x.toFixed(3)} ; ${planet.position.y.toFixed(3)} ; ${planet.position.z.toFixed(3)} )`);
+        
+        //Satellites
+        const satellites = planet.satellites;
+        if(satellites.length === 0) {
+          $('#satellites').append(`Aucun satellite`); 
+        }
+
+        satellites.forEach(s => {
+          $('#satellites').append(`<li>${s}</li>`);          
+        });
+
+        //Portals
+        displayPortals(planet.portals);
+
     }
 
   } catch (err) {
     console.log(err);
   }
+}
+
+function displayPortals(portals) {
+
+  portals.forEach(p => {
+    const portalHtml = `<tr><td>${p.position}</td><td><img class="imgAffinityPortal" src="img/${p.affinity}.svg" alt="${p.affinity}" /></td></tr>`;
+    $("#portals").append(portalHtml);
+  });
 }
