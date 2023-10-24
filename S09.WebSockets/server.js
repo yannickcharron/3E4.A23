@@ -6,8 +6,9 @@ import { Server } from 'socket.io';
 
 import IOEVENTS from './public/io-events.js';
 import dayjs from 'dayjs';
+import { timeStamp } from 'console';
 
-const PORT = 8787;
+const PORT = 1337;
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -22,6 +23,20 @@ httpServer.listen(PORT, () => {
 
 
 //TODO: Connexion des clients
+socketServer.on(IOEVENTS.CONNECTION, client => {
+    //console.log(client.id);
+    //Tout le code de communication pour un client se retrouve ici
+    
+    client.on(IOEVENTS.SEND, message => {
+        const messageToBroadcast = {
+            text: message.text,
+            timestamp: dayjs()
+        };
+        //socketServer.emit == broadcast à tous les clients
+        socketServer.emit(IOEVENTS.RECEIVED, messageToBroadcast);
+    });
+
+});
 
 
 async function newUser(socket) {
