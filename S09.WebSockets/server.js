@@ -6,7 +6,6 @@ import { Server } from 'socket.io';
 
 import IOEVENTS from './public/io-events.js';
 import dayjs from 'dayjs';
-import { timeStamp } from 'console';
 
 const PORT = 1337;
 
@@ -26,9 +25,12 @@ httpServer.listen(PORT, () => {
 socketServer.on(IOEVENTS.CONNECTION, client => {
     //console.log(client.id);
     //Tout le code de communication pour un client se retrouve ici
+
+    registerNewClient(client);
     
     client.on(IOEVENTS.SEND, message => {
         const messageToBroadcast = {
+            sender: client.data,
             text: message.text,
             timestamp: dayjs()
         };
@@ -36,15 +38,36 @@ socketServer.on(IOEVENTS.CONNECTION, client => {
         socketServer.emit(IOEVENTS.RECEIVED, messageToBroadcast);
     });
 
+    client.on(IOEVENTS.CHANGE_USERNAME, username => {
+        client.data.username = username;
+        sendUserIdentities();
+    })
+
+    client.on(IOEVENTS.DISCONNECT, reason => {
+        console.log(reason);
+        sendUserIdentities();
+    })
+
 });
 
 
-async function newUser(socket) {
+async function registerNewClient(client) {
 
+    client.data.id = client.id;
+    client.data.username = 'Anonyme';
+    client.data.avatar = randomAvatarImage();
+
+    sendUserIdentities();
 }
 
 
 async function sendUserIdentities() {
+
+    const clientsConnected = await socketServer.fetchSockets();
+
+    const allUsers = clientsConnected.map(c => c.data);
+    
+    socketServer.emit(IOEVENTS.REFRESH_USERS, allUsers);
     
 }
 
