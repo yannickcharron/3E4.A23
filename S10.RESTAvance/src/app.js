@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/planets', planetsRouter);
 app.use('/explorers', explorersRouter);
-app.use('/explotations', explorationsRouter);
+app.use('/explorations', explorationsRouter);
 //Si d'autres routers les mettre avant le middleware de gestion d'error
 
 app.use(errorsMiddleware);

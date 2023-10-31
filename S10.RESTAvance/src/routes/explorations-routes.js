@@ -1,6 +1,8 @@
 import express from 'express';
 import HttpError from 'http-errors';
 
+import explorationRepository from '../repositories/exploration-repository.js';
+
 const router = express.Router(); 
 
 class ExplorationsRoutes {
@@ -10,8 +12,18 @@ class ExplorationsRoutes {
         router.get('/:idExploration', this.getOne);
     }
 
-    getAll(req, res, next) {
-        //TODO:
+    async getAll(req, res, next) {
+        try {
+
+            const explorations = await explorationRepository.retrieveAll();
+
+            //TODO: Transform
+
+            res.status(200).json(explorations);
+
+        } catch(err) {
+            return next(err);
+        }
     }
 
     getOne(req, res, next) {
