@@ -30,8 +30,6 @@ class ExplorationsRoutes {
             const pagesLinksFunction = paginate.getArrayPages(req);
             const pagesLinks = paginate.getArrayPages(req)(NB_PAGE, totalPages, req.query.page);
 
-            console.log(pagesLinks);
-
             const responseBody = {
                 _metadata: {
                     page:req.query.page,
@@ -49,9 +47,13 @@ class ExplorationsRoutes {
             };
 
             
-            responseBody.data = explorations;
+            const transformExplorations = explorations.map(e => {
+                e = e.toObject({getters: false, virtuals: true});
+                e = explorationRepository.transform(e);
+                return e;
+            })
 
-            //TODO: Transform
+            responseBody.data = transformExplorations;
 
             res.status(200).json(responseBody);
 

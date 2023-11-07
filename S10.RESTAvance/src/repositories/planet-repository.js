@@ -13,8 +13,16 @@ class PlanetRepository {
         return Planet.find(criteria);
     }
 
-    retrieveOne(idPlanet) {
-        return Planet.findById(idPlanet);
+    retrieveOne(idPlanet, retrieveOptions = {}) {
+        const retrieveQuery = Planet.findById(idPlanet)
+        //La requête la base de données n'est toujours pas exécutée
+
+        if(retrieveOptions.embed.explorations) {
+            //Ajout du INNER JOIN à la requête
+            retrieveQuery.populate('explorations');
+        }
+
+        return retrieveQuery;
     }
 
     create(planet) {
@@ -33,12 +41,9 @@ class PlanetRepository {
 
         //Les non-optionels (obligatoires)
         planet.discoveryDate =  dayjs(planet.discoveryDate).format('YYYY-MM-DD HH:mm');
+        planet.href = `${process.env.BASE_URL}/planets/${planet._id}`
         
-        //Pour le TP ajout d'une propriété
-        planet.nouvellePropriete = 0;
-
-        //Pour en supprimer une
-        delete planet.nouvellePropriete;
+        delete planet._id;
         delete planet.__v;
 
         return planet;

@@ -33,6 +33,7 @@ class PlanetsRoutes {
 
   async getOne(req, res, next) {
     try {
+      const retrieveOptions = { embed: {} };
       const transformOptions = {};
       const idPlanet = req.params.idPlanet;
 
@@ -46,7 +47,17 @@ class PlanetsRoutes {
         }
       }
 
-      let planet = await planetRepository.retrieveOne(idPlanet);
+      //Vérification pour l'ajout des explorations
+      if(req.query.embed) {
+        if(req.query.embed === 'explorations') {
+          //Le client veut les explorations de la planète
+          retrieveOptions.embed.explorations = true;
+        } else {
+          return next(HttpError.BadRequest(`Le paramètre embed doit être explorations, valeur fournie ${req.query.embed}`))
+        }
+      }
+
+      let planet = await planetRepository.retrieveOne(idPlanet, retrieveOptions);
 
       if (!planet) {
         //Envoie une erreur 404
@@ -54,7 +65,7 @@ class PlanetsRoutes {
       }
 
       //Avant d'appeler transform on doit convertir en objet la planet
-      planet = planet.toObject({ getters:false, virtuals:false });
+      planet = planet.toObject({ getters:false, virtuals:true });
       planet = planetRepository.transform(planet, transformOptions);
 
       res.status(200).json(planet);

@@ -18,6 +18,15 @@ class ExplorationsRepository {
 
     }
 
+    transform(exploration) {
+
+
+        exploration.href = `${process.env.BASE_URL}/explorations/${exploration._id}`;
+
+        delete exploration._id;
+        return exploration;
+    }
+
 }
 
 export default new ExplorationsRepository();
