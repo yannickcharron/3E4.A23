@@ -62,8 +62,32 @@ class ExplorationsRoutes {
         }
     }
 
-    getOne(req, res, next) {
-        //TODO:
+    async getOne(req, res, next) {
+        try {
+
+            const retrieveOptions = { embed: {} };
+
+            if(req.query.embed === 'planet') {
+                retrieveOptions.embed.planet = true;
+            }
+
+            const idExploration = req.params.idExploration;
+
+            let exploration = await explorationRepository.retrieveById(idExploration, retrieveOptions);
+
+            if(!exploration) {
+                return next(HttpError.NotFound(`L'exploration avec le ${idExploration} n'existe pas.`));
+            }
+
+            //Transform
+            exploration = exploration.toObject({getters:false, virtuals:true});
+            exploration = explorationRepository.transform(exploration, retrieveOptions);
+
+            res.status(200).json(exploration);
+            
+        } catch(err) {
+            return next(err);
+        }
     }
 
 }
