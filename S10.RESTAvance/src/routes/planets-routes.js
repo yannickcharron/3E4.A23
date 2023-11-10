@@ -87,8 +87,17 @@ class PlanetsRoutes {
         }
 
         let newPlanet = await planetRepository.create(req.body);
+        res.header('Location', `${process.env.BASE_URL}/planets/${newPlanet._id}`);
+
+        if(req.query._body === 'false') {
+          //204 => No Content
+          return res.status(204).end();
+        }
+
         newPlanet = newPlanet.toObject({getters:false, virtuals:false});
         newPlanet = planetRepository.transform(newPlanet);
+
+        //201 => Created
         res.status(201).json(newPlanet);
     } catch(err) {
       return next(err);
