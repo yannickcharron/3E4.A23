@@ -29,6 +29,12 @@ class PlanetRepository {
         return Planet.create(planet);
     }
 
+    update(idPlanet, newPlanet) {
+        const filter = { _id: idPlanet};
+        return Planet.findOneAndUpdate(filter, { $set: Object.assign(newPlanet) }, { new: true, runValidators: true });
+    }
+
+
     transform(planet, transformOptions = {}) {
 
         //2 types de transformations

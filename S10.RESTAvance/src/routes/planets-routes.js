@@ -2,6 +2,7 @@ import express from 'express';
 import HttpError from 'http-errors';
 
 import planetRepository from '../repositories/planet-repository.js';
+import planetValidators from '../validators/planet-validator.js';
 
 const router = express.Router();
 
@@ -10,8 +11,8 @@ class PlanetsRoutes {
     router.post('/', this.post);
     router.get('/', this.getAll);
     router.get('/:idPlanet', this.getOne);
-    router.patch('/:idPlanet', this.patch);
-    router.put('/:idPlanet', this.patch);
+    router.patch('/:idPlanet', planetValidators.partial(), this.update);
+    router.put('/:idPlanet', this.update);
     router.delete('/:idPlanet', this.deleteOne);
   }
 
@@ -104,12 +105,34 @@ class PlanetsRoutes {
     }
   }
 
-  async patch(req, res, next) {
-    //TODO:
-  }
+  //PATCH:Mise à jour partielle
+  //PUT:Mise à jour complète
+  async update(req, res, next) {
 
-  async put(req, res, next) {
-    //TODO:
+    try {
+
+      const idPlanet = req.params.idPlanet;
+      //req.body représente les nouvelles valeurs de la planète
+      let updatedPlanet = await planetRepository.update(idPlanet, req.body);
+      if(!updatedPlanet) {
+        return next(HttpError.NotFound(`La planète avec l'identifiant ${idPlanet} n'existe pas`));
+      }
+
+      if(req.query._body === 'false') {
+        //204 => No Content
+        return res.status(204).end();
+      }
+
+      //Transform
+      updatedPlanet = updatedPlanet.toObject({getters:false, virtuals:true});
+      updatedPlanet = planetRepository.transform(updatedPlanet);
+
+      res.status(200).json(updatedPlanet);
+
+    } catch(err) {
+      return next(err);
+    }
+
   }
 
 }
