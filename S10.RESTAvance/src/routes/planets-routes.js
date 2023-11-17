@@ -1,8 +1,10 @@
 import express from 'express';
 import HttpError from 'http-errors';
+import { validationResult } from 'express-validator';
 
 import planetRepository from '../repositories/planet-repository.js';
 import planetValidators from '../validators/planet-validator.js';
+import validator from '../middlewares/validator.js';
 
 const router = express.Router();
 
@@ -11,8 +13,8 @@ class PlanetsRoutes {
     router.post('/', this.post);
     router.get('/', this.getAll);
     router.get('/:idPlanet', this.getOne);
-    router.patch('/:idPlanet', planetValidators.partial(), this.update);
-    router.put('/:idPlanet', this.update);
+    router.patch('/:idPlanet', planetValidators.partial(), validator, this.update);
+    router.put('/:idPlanet', planetValidators.complete(), validator, this.update);
     router.delete('/:idPlanet', this.deleteOne);
   }
 
